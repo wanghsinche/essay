@@ -1,0 +1,111 @@
+# 多图片页面另类加载方法
+
+> 在页面上绘制canvas/webgl动画必须保证所需的序列帧顺利加载。最常见的做法是手动或者用loader把这些图片一张张从cdn加载进来，或者拼成精灵图，加载后手动分离序列帧。但是，单独加载会大幅增加http请求，某些api还要求同源策略，拼成精灵图又有图片过大风险。趁此机会，今天就向大家介绍几种不常见的，自己在项目中有到过的大批量图片加载方式。
+
+## 背景介绍  
+利用Pixijs或Threejs制作视觉效果绚丽的h5宣传页越来越流行。**[哈利波特20周年](http://news.163.com/special/fdh5_harrypotter20/)**、**[UP2017年会](http://up.qq.com/act/a20170301pre/index.html?ADTAG=tgi.wx.share.message)**等案例均有很好的传播效果。精美视觉效果意味着需要增加大量图片资源，而大批量图片加载一直是web页面优化中绕不过的点。无论是制作webgl/canvas动画，还是直接css轮播图片，开发人员都需要将设计师给的每一帧图片插入到页面，保证全部加载后再播放动画。 
+
+<img height="300" src="http://nos.netease.com/knowledge/634e42ca-6265-44b6-8759-fe7f463ec547">
+<img height="300" src="http://nos.netease.com/knowledge/4a2b2a74-3177-4e02-a2b7-080775a3d3af">
+
+
+保证所需的大量图片顺利加载，最传统的做法是手动或者用动画引擎自带的loader把这些图片一张张从cdn load进来，或者拼成精灵图，加载后一张张分离。但是，单独加载会产生大量http请求，并要求cdn图片开启跨域支持，而拼成精灵图又有图片过大风险，导致低端移动设备闪退。
+
+趁此机会，今天就向大家介绍几种不常见的，我在项目中用到过的大批量图片加载方式。
+
+## 方法1：线下图片打包，页面直接下载后本地解压分离   
+得益于现代浏览器的Typed Array，bloburl，以及前人的努力，目前浏览器环境可以轻松下载二进制文件并在页面里解压得到里面的单个图片。只需用压缩软件将图片资源统一打包成zip格式，线上页面加载时请求这个zip文件，本地解压即可得到图片blob对象。该方法在热门文章《[页面里全是swf文件？前端资源加载新思路！](http://ks.netease.com/blog?id=7907)》中有非常详细的案例解析，非常值得一看。文章里提到的库是[zlib](https://github.com/imaya/zlib.js)，但我这里用[jszip](https://github.com/Stuk/jszip)搭配[jszip-utils](https://github.com/Stuk/jszip-utils)做demo和分析。因为zlib的日文片假名文档实在太难看懂了。。。 
+
+<img src="http://nos.netease.com/knowledge/78427618-e402-4305-8f3f-5e724448cc8a?download=jszip.png" height="400">
+### 可能存在的问题： 
+* 兼容性：有人会说这么做一定有兼容性问题吧。这其实有点多虑，除去promise不说（这显然可以polyfill），jszip的基础是type array和blob，这些特性在android4、ie10得到支持。需要用到zip打包图片的场景一般是制作canvas动画或者webgl动画，这两个api也差不多需要android4、ie10才能较好支持。更老的环境里实际上也没有打包图片线上解压的需求。
+* 性能：pc端通常还好，但移动端的性能确实需要好好考虑。据jszip作者大佬表示，要防止可能出现的内存消耗过大。10MB的zip可以在ie10+很快地打开，再大了可能就会有显著性能下降了。值得一提的是，javascript里的string用utf16编码，10mb的text会消耗20mb内存。
+> An other limitation comes from the browser (and the machine running the browser). A compressed zip file of 10MB is easily opened by firefox / chrome / opera / IE10+ but will crash older IE. Also keep in mind that strings in javascript are encoded in UTF-16 : a 10MB ascii text file will take 20MB of memory.
+> --[Performance issues](https://github.com/Stuk/jszip/blob/master/documentation/limitations.md#performance-issues)   
+* 编码问题：jszip只原生支持utf8编码，而且zip文件不会包含文件名的编码。所以如果文件名不是utf8编码，那么有可能出现文件名乱码等问题。
+> JSZip only supports UTF-8 natively. A zip file doesn’t contain the name of the encoding used, you need to know it before doing anything.
+> --[Encodings support](https://github.com/Stuk/jszip/blob/master/documentation/limitations.md#encodings-support)  
+* 跨域：显然要解决跨域问题，其实即使是原始的图片，想放到webgl里面也会有跨域问题。 
+* 加载进度和代码复杂度：这个只能自己手写XMLHttpRequest了，监听onprogress事件，不过如果拿到的progress event里的lengthComputable属性false，那只能瞎猜进度了，比如我这个[demo](http://welloffer.tk/demo_jszip/)。此外要把文件解压出来，要写的代码量不少。
+
+### 经典案例：
+#### [纪念碑谷2](https://game.weixin.qq.com/cgi-bin/actnew/newportalact/104705/4DidwrhpdAot-ze_FAIVdQ/main_page)
+
+## 方法2：转base64存到json中，请求后直接生成Image  
+把图片打包到zip里面无非是为了减少http请求，减少回调函数和代码复杂度，保证请求一次即可使用资源，而不必担忧单个图片加载出错的问题。按照这个思路，其实可以把序列帧按转成base64，按播放先后顺序放到json文件里。线上请求json文件，把base64填入image的src中得到序列帧。  
+就像这样：
+~~~javascript
+$.ajax({
+    url:'/sprites.json',
+    dataType:'json',
+    success:function(base64Ls){
+        var imageLs = base64Ls.map(function(v){
+            var img = new Image();
+            img.src = v;  
+            return img;
+        });
+        createSpriteAnimation(imageLs);
+    }
+});
+~~~
+推荐[杭州技术中心实用工具图片转JSON](http://59.111.129.35/)工具进行批量图片转base64  
+### 可能存在的问题： 
+* 兼容性：其实就是Data URLs的支持，ie8就有基本支持了，通杀大部分移动端，Data URLs已经在网上用好多年了  
+* 性能：
+  1. 一个是内存问题，毕竟从json中把数据拿出再生成image，内存消耗肯定比普通图片加载要高。而且低端手机的处理速度也存疑，这点和zip包解压一样。 
+  2. 另一个问题就是Data URLs会比普通图片大，网上很多人都说大30%左右，但不应该这么算。base64放在json/js文件中，传输到用户手上其实是gzip压缩过的，所以没有30%。根据2011年的调查[https://www.davidbcalhoun.com/2011/when-to-base64-encode-images-and-when-not-to/](https://www.davidbcalhoun.com/2011/when-to-base64-encode-images-and-when-not-to/)，大概的数据量对比如下：相差并不太大，处于可以接受的范围。
+
+  ![Test #1: Five 16×16 icons from the Fugue Icon set (PNG)](http://nos.netease.com/knowledge/ccadf44d-6f6e-4ef5-b057-277e57e22d1f "Test #1: Five 16×16 icons from the Fugue Icon set (PNG)") 
+
+  ![Test #3: Five Flickr 240×160 Pictures (JPEG)](http://nos.netease.com/knowledge/906ba719-8370-4c36-8e64-3be7a4907535 "Test #3: Five Flickr 240×160 Pictures (JPEG)") 
+
+* 跨域问题：可以用jsonp解决
+
+### 实际项目: 
+目前[这个页面](http://qnm.163.com/news/official/2017/10/19/20681_719576.html)的动画资源就是用这种方法加载的，因为是直接绘制到canvas，所以也不处理dataurl跨域问题
+
+## 方法3：图片转base64存js文件，放到cdn上用jsonp请求
+如果仅仅加载大量图片，那么方法2是最简单的，但是会有各种跨域问题，所以又有方法3，图片转base64存js文件，取出后赋值src得到可用的image。用jsonp解决了跨域。于是变成下面这个样子：
+资源：
+```jsonp.js
+jsonpCallback(['data:image/png;base64,各种地址1','data:image/png;base64,各种地址2','data:image/png;base64,各种地址2']);
+```
+获取：
+```javascript
+$.ajax({
+    url:'https://cdn.com/jsonp.js',
+    dataType:'jsonp',
+    callback:'jsonpCallback',
+    success:function(base64Ls){
+        var imageLs = base64Ls.map(function(v){
+            var img = new Image();
+            img.src = v;  
+            return img;
+        });
+        createSpriteAnimation(imageLs);
+    }
+});
+```
+### 可能存在的问题： 
+* 兼容性：兼容性与方法二一样。
+* 跨域：无
+* 性能和复杂度：与方法二一样。
+
+###实际项目：
+与方法二一样
+
+## 总结  
+对于web页面动画大量图片资源的加载，可以用这些方法：
+* 1.zip打包加载，本地解包，可以查看加载进度 
+* 2.base64转码，json加载，无兼容问题，数据量轻微加大  
+* 3.jsonp+base64加载，无兼容问题，数据量轻微加大，解决一切跨域问题  
+
+三种图片加载方式各有优缺点，需要根据应用场合选择。方法二代码量和逻辑都很简单，如果只是简单地将序列帧图片绘制到canvas上，方法二非常合适。当项目中使用了webgl，图片不能跨域，而且有其他资源也想打包，那么推荐方法一，打包成zip，在线解包。
+要是没办法把zip文件放到域名下，又没办法添加cors头部，那么就使用方法三吧，因为方法三没在实际中使用过，效果未知，在此不敢保证。
+
+## 参考
+> * 1.[zlib](https://github.com/imaya/zlib.js)
+> * 2.[jszip](https://github.com/Stuk/jszip) 
+> * 3.[when to base64 encode images and when not to](https://www.davidbcalhoun.com/2011/when-to-base64-encode-images-and-when-not-to/) 
+> * 4.[页面里全是swf文件？前端资源加载新思路！](http://ks.netease.com/blog?id=7907)
+> * 5.[jsonp+base64加载动画序列的实际应用](http://qnm.163.com/news/official/2017/10/19/20681_719576.html)
