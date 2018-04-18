@@ -19,8 +19,10 @@ IPC有管道、消息队列、套接字、共享内存和信号量几种。其�
 
 ## nodejs中常用的IPC
 1.*child_process.fork*
-child_process.fork() 方法是 child_process.spawn() 的一个特殊情况，专门用于衍生新的 Node.js 进程，返回一个 ChildProcess 对象。 返回的 ChildProcess 会有一个额外的内置的通信通道，它允许消息在父进程和子进程之间来回传递。 官网的例子：
+child_process.fork() 方法是 child_process.spawn() 的一个特殊情况，专门用于衍生新的 Node.js 进程，返回一个 ChildProcess 对象。 返回的 ChildProcess 会有一个额外的内置的通信通道，它允许消息在父进程和子进程之间来回传递。官网的例子： 
+
 父进程：
+
 ```javascript
 const cp = require('child_process');
 const n = cp.fork(`${__dirname}/sub.js`);
@@ -175,7 +177,7 @@ class IPCServer extends EventEmitter {
 经过比较和初步实现，redis方案是最省事的办法，而且后期扩充功能，增加发布机器，提高构建速度也相当方便。
 
 ## 参考
-(node文档)[http://nodejs.cn/api/child_process.html#child_process_subprocess_send_message_sendhandle_options_callback]
-(Thrift)[https://thrift.apache.org/tutorial/nodejs]
-(RPC(远程过程调用)的实现原理)[https://blog.cnbang.net/tech/1966/]
+[node文档](http://nodejs.cn/api/child_process.html#child_process_subprocess_send_message_sendhandle_options_callback)
+[Thrift](https://thrift.apache.org/tutorial/nodejs)
+[RPC(远程过程调用)的实现原理](https://blog.cnbang.net/tech/1966/)
 
