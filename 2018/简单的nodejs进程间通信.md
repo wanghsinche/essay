@@ -8,17 +8,21 @@ IPC有管道、消息队列、套接字、共享内存和信号量几种。其�
 ### 管道
 管道提供了类似nodejs中stream机制。读进程从首部读取数据，写进程从末尾不断写入数据。如果缓冲区为空，读进程将被阻塞，相反的，当缓冲区充满时，写进程无法继续写入，直到读进程将数据读出，缓冲区重新可用。管道有三种：1、普通管道只能从父进程单向流向子进程；2、流管道可以在父子进程间传递消息；3、命名管道没有以上两种管道的限制，可以在两个不同进程间相互传递消息。
 
-1.*消息队列*
+1.``消息队列``
+
 管道只能传递字节流，而且缓冲区较小。消息队列克服以上缺点，可以传递有格式的数据，而且接收者在消息到达很长时间后再取用，非常适合并发较高而处理能力不足的场景。
 
-2.*套接字*
+2.``套接字``
+
 套接字socket功能类似命名管道，而且允许不同机器间的进程通信。使用相当广泛
 
-3.*共享内存*
+3.``共享内存``
+
 共享内存是最快的IPC方式。操作系统建立一块共享内存，并将其映射到每个进程的地址空间上，各个进程就可以直接对这块共享内存进行读写，实现通信。共享内存不提供同步机制，需要开发者自己实现，这点比较麻烦。
 
 ## nodejs中常用的IPC
-1.*child_process.fork*
+1.**child_process.fork**
+
 child_process.fork() 方法是 child_process.spawn() 的一个特殊情况，专门用于衍生新的 Node.js 进程，返回一个 ChildProcess 对象。 返回的 ChildProcess 会有一个额外的内置的通信通道，它允许消息在父进程和子进程之间来回传递。官网的例子： 
 
 父进程：
@@ -43,10 +47,12 @@ process.send({ foo: 'bar', baz: NaN });
 ```
 利用这种方式，需要把API服务器，或者发布程序做成父进程，另一个成为子进程。或者都作为子进程，由父进程中转消息。不利于解耦和调试，也不能避免父进程出错导致所有服务都不可用的情况。而且API服务器和发布程序也必须运行在同一个机器上。
 
-2.*nodejs+redis*
+2.**nodejs+redis**
+
 redis非常常用，利用自带的list类型，可以得到一个简陋的消息队列。API服务器把发布任务rpush到list中，发布程序在空闲时从list中取出发布任务进行处理。由于websocket由API服务器建立和管理，所以发布程序还需要不断将发布任务的日志通知API服务器，再通过相应的websocket发送给客户端。正好redis提供了订阅/发布功能，发布程序可以将日志发布给API服务器使用。
 
-3.*net模块*
+3.**net模块** 
+
 用nodejs的net模块，在API服务器和发布程序间建立socket非常简单。需要注意的地方是socket只能传送无格式字节流，需要自己实现解包和消息封装。
 首先需要做一个解包和消息封装的基类，继承自EventEmitter，这里选用‘\n’为分隔符，并在发送消息时用json.stringify对消息转义，防止消息本身带有‘/n’：
 ```javascript
@@ -160,7 +166,8 @@ class IPCServer extends EventEmitter {
 ```
 使用时只需要 `const ipcServer = new IPCServer(); ipcServer.listen(7890)`然后监听client发送过来的message即可。由于我觉得构建发布系统需要的IPC应该很简单，而且没必要上redis，所以一开始采用的就是这种方式。
 
-4.*远程过程调用RPC*
+4.**远程过程调用RPC**
+
 上述的socket方式非常简单，不利于处理多种类型的消息。构建发布程序与API服务器之间需要传递的消息有：
 
  -建立项目组文件夹  
@@ -178,6 +185,8 @@ class IPCServer extends EventEmitter {
 
 ## 参考
 [node文档](http://nodejs.cn/api/child_process.html#child_process_subprocess_send_message_sendhandle_options_callback)
+
 [Thrift](https://thrift.apache.org/tutorial/nodejs)
+
 [RPC(远程过程调用)的实现原理](https://blog.cnbang.net/tech/1966/)
 
