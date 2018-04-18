@@ -129,12 +129,53 @@ class IPCClient extends RawDataParser {
     }
 }
 ```
+最后是简单socket server
+```JavaScript
+/* IPC 服务器 */
+class IPCServer extends EventEmitter {
+    constructor() {
+        super()
+        this.server = net.createServer(sock => {
+            this.connectionHandle(sock)
+        })
+        this.server.on('error', err => {
+            this.emit('error', err)
+        })
+    }
+    connectionHandle(sock) {
+        const client = new IPCClient(sock)
+        client.on('message', msg => {
+            this.emit('message', msg, client)
+        })
+        this.emit('connect', client);
+    }
+    listen(port) {
+        this.server.listen(port)
+        console.info('task service listen at ' + port)
+    }
+}
 
+```
+使用时只需要 `const ipcServer = new IPCServer(); ipcServer.listen(7890)`然后监听client发送过来的message即可。由于我觉得构建发布系统需要的IPC应该很简单，而且没必要上redis，所以一开始采用的就是这种方式。
 
-目前构建发布系统需要的功能很简单，所以采用了这种方式。
+4.*远程过程调用RPC*
+上述的socket方式非常简单，不利于处理多种类型的消息。构建发布程序与API服务器之间需要传递的消息有：
 
+ -建立项目组文件夹  
+ -建立项目文件夹
+ -建立分支  
+ -发布测试、预发布、正式发布
+ -项目回滚
+ -websocket普通日志
+ -websocket出错日志
+ 
+ 其中大部分消息还需要在完成任务后告知API服务器任务已经完成/出错，全部手动处理这些过程非常不方便。更好的办法是API服务器直接RPC调用发布程序的接口，完成任务，发布程序也可以用RPC命令让API服务器上的websocket输出日志。自己根据json-rpc规范简陋封装并不难，不过极有可能因为回调函数导致内存泄露。还是用现成的Thrift框架更好。
 
+## 最后
+经过比较和初步实现，redis方案是最省事的办法，而且后期扩充功能，增加发布机器，提高构建速度也相当方便。
 
-
-
+## 参考
+(node文档)[http://nodejs.cn/api/child_process.html#child_process_subprocess_send_message_sendhandle_options_callback]
+(Thrift)[https://thrift.apache.org/tutorial/nodejs]
+(RPC(远程过程调用)的实现原理)[https://blog.cnbang.net/tech/1966/]
 
