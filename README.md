@@ -1,5 +1,5 @@
-# essay
-> My technical essays and practicals
+# Essay
+> All about my technical essays and practicals
 
 ## 2017
 - [多图片页面另类加载方法](https://github.com/wanghsinche/essay/blob/master/2017/%E5%A4%9A%E5%9B%BE%E7%89%87%E9%A1%B5%E9%9D%A2%E5%8F%A6%E7%B1%BB%E5%8A%A0%E8%BD%BD%E6%96%B9%E6%B3%95.md)
