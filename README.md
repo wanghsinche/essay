@@ -4,7 +4,7 @@
 <img src="https://github.com/wanghsinche/essay/raw/master/webwxgeticon.jpg" width=100>
 </h1>
 
-啊啊啊 `_(:з)∠)_ `
+就酱吧 `_(:з)∠)_ `
 
 ## **目录**
 > ### 2017
