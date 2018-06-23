@@ -1,7 +1,7 @@
 # 重新了解nodejs module
 > 从webpack配置文件到nodejs服务器不停机更新
 ## 前言
-webpack流行，形形色色的loader和plugin功不可没。根据文档，loader和plugin需要安装到项目目录下，由webpack配置文件调用。然而我们的项目多是活动专题，loader，plugin和其他依赖基本一样，每次新建项目都要重新安装一遍npm模块毫无必要。为了使npm模块能被多个项目共用，需要从nodejs的module入手，进一步了解其模块机制。
+webpack流行，形形色色的loader和plugin功不可没。根据文档，loader和plugin需要安装到项目目录下，由webpack配置文件调用。然而我们的项目多是活动专题，loader，plugin和其他依赖基本一样，每次新建项目都要重新安装一遍npm模块毫无必要。为了使npm模块能被多个项目共用，需要从nodejs的module入手，进一步了解其模块机制。此外，还可以利用module机制，实现线上不停机更新。
 ## webpack项目的配置
 一个webpack项目通常会有四种依赖模块： 
 1. 文件loader。webpack会把配置文件中的loader都隐式require进来。
