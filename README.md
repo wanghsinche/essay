@@ -1,8 +1,8 @@
 # Essay
 > All about my technical essays and practicals
-<center>
+<h1 align="center">
 <img src="https://github.com/wanghsinche/essay/raw/master/webwxgeticon.jpg" width=100>
-</center>
+</h1>
 
 啊啊啊 `_(:з)∠)_ `
 
