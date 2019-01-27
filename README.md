@@ -17,3 +17,6 @@
 - [从fis3迁移到webpack---新版通用前端发布系统](https://github.com/wanghsinche/essay/blob/master/2018/%E4%BB%8Efis3%E8%BF%81%E7%A7%BB%E5%88%B0webpack---%E6%96%B0%E7%89%88%E9%80%9A%E7%94%A8%E5%89%8D%E7%AB%AF%E5%8F%91%E5%B8%83%E7%B3%BB%E7%BB%9F.md)
 - [重新了解nodejs module](https://github.com/wanghsinche/essay/blob/master/2018/%E9%87%8D%E6%96%B0%E4%BA%86%E8%A7%A3nodejs%20module.md)
 - [移动端手势动效的实现](https://github.com/wanghsinche/essay/blob/master/2018/%E7%A7%BB%E5%8A%A8%E7%AB%AF%E6%89%8B%E5%8A%BF%E5%8A%A8%E6%95%88%E7%9A%84%E5%AE%9E%E7%8E%B0.md)
+
+> ### 2019
+- [一道面试题引出的React多年误解](https://github.com/wanghsinche/essay/blob/master/2019/%E4%B8%80%E9%81%93%E9%9D%A2%E8%AF%95%E9%A2%98%E5%BC%95%E5%87%BA%E7%9A%84%E5%A4%9A%E5%B9%B4%E8%AF%AF%E8%A7%A3.md)
