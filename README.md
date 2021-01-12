@@ -22,3 +22,6 @@
 - [一道面试题引出的React多年误解](https://github.com/wanghsinche/essay/blob/master/2019/%E4%B8%80%E9%81%93%E9%9D%A2%E8%AF%95%E9%A2%98%E5%BC%95%E5%87%BA%E7%9A%84%E5%A4%9A%E5%B9%B4%E8%AF%AF%E8%A7%A3.md)
 - [从威尼斯人的赌桌到宽基ETF](https://github.com/wanghsinche/essay/blob/master/2019/%E4%BB%8E%E5%A8%81%E5%B0%BC%E6%96%AF%E4%BA%BA%E7%9A%84%E8%B5%8C%E6%A1%8C%E5%88%B0%E5%AE%BD%E5%9F%BAETF.md)
 - [筹码，下注与资金管理](https://github.com/wanghsinche/essay/blob/master/2019/%E7%AD%B9%E7%A0%81%EF%BC%8C%E4%B8%8B%E6%B3%A8%E4%B8%8E%E8%B5%84%E9%87%91%E7%AE%A1%E7%90%86.md)
+
+> ### 2020
+- [交易的失败与伟大](https://github.com/wanghsinche/essay/blob/master/2020/%E4%BA%A4%E6%98%93%E7%9A%84%E5%A4%B1%E8%B4%A5%E4%B8%8E%E4%BC%9F%E5%A4%A7.md)
