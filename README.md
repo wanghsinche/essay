@@ -27,4 +27,5 @@
 - [交易的失败与伟大](https://github.com/wanghsinche/essay/blob/master/2020/%E4%BA%A4%E6%98%93%E7%9A%84%E5%A4%B1%E8%B4%A5%E4%B8%8E%E4%BC%9F%E5%A4%A7.md)
 
 > ### 2021
+- [时隔5年，重新入门机器学习](https://github.com/wanghsinche/essay/blob/master/2021/%E6%97%B6%E9%9A%945%E5%B9%B4%E9%87%8D%E6%96%B0%E5%85%A5%E9%97%A8%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0.md)
 - [重新入门神经网络·简单的前馈神经网络](https://github.com/wanghsinche/essay/blob/master/2021/%E9%87%8D%E6%96%B0%E5%85%A5%E9%97%A8%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C%C2%B7%E7%AE%80%E5%8D%95%E7%9A%84%E5%89%8D%E9%A6%88%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C.md)
