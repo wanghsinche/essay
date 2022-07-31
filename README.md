@@ -1,3 +1,4 @@
+![banner](https://raw.githubusercontent.com/wanghsinche/essay/master/banner.jpg)
 # Essay
 > All about my technical essays and practicals
 <h1 align="center">
