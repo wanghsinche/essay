@@ -1,5 +1,7 @@
 # How to design a world map component
+
 > Before we talk about this topic, I would like to list down the items that I am going to cover.
+
 ## Table of content
 1. requirements
 2. layout component
@@ -7,6 +9,7 @@
 4. data flow
 5. optimization 
 6. accessibility
+
 ## Requirement
 <img width="263" alt="image" src="https://user-images.githubusercontent.com/14119632/182647884-835d1077-cca5-42ed-9e53-f758544df773.png">
 
