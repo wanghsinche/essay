@@ -73,6 +73,7 @@ But there’s still some space to improve. We found it’s unnecessary to use a 
 But the challenge is how we know the geometries that need to be displayed in our viewport. In other words, how do we find out the regions within the viewport by using longitude and latitude? 
 
 After having several meetings with the BE engineers, we decided to involve a proximity service to solve this issue. 
+
 It’s not complex to implement a simple proximity service by using Geo-Hash,  which is compatible with Redis. By encoding the longitude and latitude into Geo-Hash, we can easily conduct the nearby searching by matching the hash prefix. To avoid the edge case of Geo-Hash, we can search the center point of the viewport and its eight neighborhoods, which results in a larger scope than the viewport. But it is acceptable in this scenario. 
 
 By using the proximity service, we keep a smooth user experience whatever the zoom level is. 
@@ -80,3 +81,4 @@ By using the proximity service, we keep a smooth user experience whatever the zo
 ## Accessibility
 1. semantic svg elements (tooltip tag, path, rectangle, etc)
 2. arial-label for each region and its value
+3. tabindex for the whole component
