@@ -32,6 +32,8 @@
 
 > ### 2022
 - [system design -- Poll Widget](https://wanghsinche.github.io/essay/2022/system-design/to-design-the-poll-widget)
+- [system design -- orld Map](https://wanghsinche.github.io/essay/2022/system-design/to-design-the-world-map)
+
 
 ![banner](https://raw.githubusercontent.com/wanghsinche/essay/master/banner.jpg)
 
