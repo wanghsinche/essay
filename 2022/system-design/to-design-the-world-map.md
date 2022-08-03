@@ -67,6 +67,7 @@ As mentioned above, performance is the crucial factor for a large magnitude data
 To speed up the rendering and reduce the blocking time, we can approach it in 2 ways. 
 
 Firstly, we can reduce the unnecessary re-rendering. For example, we separate the whole component into different layers and only re-render the corresponding layer when there’re some changes. We can also use the memorization technique to eliminate the duplicated re-rendering. After introducing these techniques, the frame per second increased from 40 to around 60. 
+
 But there’s still some space to improve. We found it’s unnecessary to use a high-resolution map when at a low zoom level. Besides, the geometries that are out of the viewport should be hidden. Thus, we used the similar tech that derives from the virtual list to create our own ‘virtual geometry’, which means we only render the geometries that are in the viewport. Furthermore, we can use different resolutions for different zoom levels.
 
 But the challenge is how we know the geometries that need to be displayed in our viewport. In other words, how do we find out the regions within the viewport by using longitude and latitude? 
