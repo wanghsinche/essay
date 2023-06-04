@@ -36,7 +36,7 @@
 - [learned from interview](https://wanghsinche.github.io/essay/2022/learned-from-interview)
 
 > ### 2023
-- [回头看才知那是转折点](https://wanghsinche.github.io/essay/2023/review-and-anticipate.md)
+- [回头看才知那是转折点](https://wanghsinche.github.io/essay/2023/review-and-anticipate)
 
 ![banner](https://raw.githubusercontent.com/wanghsinche/essay/master/banner.jpg)
 
